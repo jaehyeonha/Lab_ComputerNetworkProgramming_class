@@ -97,9 +97,10 @@ void read_childproc(int sig)
 	pid=waitpid(-1, &status, WNOHANG);
 	printf("removed proc id: %d \n", pid);
 }
+
 void error_handling(char *message)
 {
-	fputs(buf, stderr);
+	fputs(message, stderr);
 	fputc('\n', stderr);
 	exit(1);
 }
