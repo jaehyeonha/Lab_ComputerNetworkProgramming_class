@@ -1,3 +1,4 @@
+//2021115737 hajaehyeon
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
 
     FD_SET(fd2, &reads);
     fd_max = fd2;
+    printf("max_fd: %d\n",fd_max);
 
 	while(1) 
 	{
