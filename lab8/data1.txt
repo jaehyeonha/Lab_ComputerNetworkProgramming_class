@@ -1,0 +1,45 @@
+  1 #include <stdio.h>
+  2 #include <stdlib.h>
+  3 #include <string.h>
+  4 #include <unistd.h>
+  5 #include <arpa/inet.h>
+  6 #include <sys/socket.h>
+  7 #define BUF_SIZE 1024
+  8 
+  9 int main(int argc, char *argv[])
+ 10 {
+ 11     int serv_sock, clnt_sock;
+ 12     FILE * readfp;
+ 13     FILE * writefp;
+ 14 
+ 15     struct sockaddr_in serv_adr, clnt_adr;
+ 16     socklen_t clnt_adr_sz;
+ 17     char buf[BUF_SIZE]={0,};
+ 18 
+ 19     serv_sock=socket(PF_INET, SOCK_STREAM, 0);
+ 20     memset(&serv_adr, 0, sizeof(serv_adr));
+ 21     serv_adr.sin_family=AF_INET;
+ 22     serv_adr.sin_addr.s_addr=htonl(INADDR_ANY);
+ 23     serv_adr.sin_port=htons(atoi(argv[1]));
+ 24 
+ 25     bind(serv_sock, (struct sockaddr*) &serv_adr, sizeof(serv_adr));
+ 26     listen(serv_sock, 5);
+ 27     clnt_adr_sz=sizeof(clnt_adr);
+ 28     clnt_sock=accept(serv_sock, (struct sockaddr*)&clnt_adr,&clnt_adr_sz);
+ 29 
+ 30     readfp=fdopen(clnt_sock, "r");
+ 31     writefp=fdopen(dup(clnt_sock), "w");
+ 32 
+ 33     fputs("FROM SERVER: Hi~ client? \n", writefp);
+ 34     fputs("I love all of the world \n", writefp);
+ 35     fputs("You are awesome! \n", writefp);
+ 36     fflush(writefp);
+ 37 
+ 38     shutdown(fileno(writefp), SHUT_WR);
+ 39     fclose(writefp);
+ 40     
+ 41     fgets(buf, sizeof(buf), readfp);
+ 42     fputs(buf, stdout);
+ 43     fclose(readfp);
+ 44     return 0;
+ 45 }
