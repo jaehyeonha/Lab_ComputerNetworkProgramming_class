@@ -94,26 +94,27 @@ int main(int argc, char *argv[])
 
                 size+=packet.buf_len;
                 count+=1;
-            }
-            sleep(1);
 
-            if(packet.buf_len == BUF_SIZE){
-                packet.cmd = FILE_SEND;
-                printf("[Tx] FILE_SEND(cmd: %d) len: %d, totla_tx_cnt: %d, total_tx_bytes: %d\n",packet.cmd, packet.buf_len, count, size);
-                sendto(serv_sock, &packet, sizeof(packet), 0, 
+                sleep(1);
+
+                if(packet.buf_len == BUF_SIZE){
+                    packet.cmd = FILE_SEND;
+                    printf("[Tx] FILE_SEND(cmd: %d) len: %d, totla_tx_cnt: %d, total_tx_bytes: %d\n",packet.cmd, packet.buf_len, count, size);
+                    sendto(serv_sock, &packet, sizeof(packet), 0, 
 								(struct sockaddr*)&clnt_adr, clnt_adr_sz);
-            }
-            else if(packet.buf_len != BUF_SIZE){
-                packet.cmd = FILE_END;
-                printf("[Tx] FILE_END(cmd: %d) len: %d, totla_tx_cnt: %d, total_tx_bytes: %d\n",packet.cmd, packet.buf_len, count, size);
-                sendto(serv_sock, &packet, sizeof(packet), 0, 
+                }
+                else if(packet.buf_len != BUF_SIZE){
+                    packet.cmd = FILE_END;
+                    printf("[Tx] FILE_END(cmd: %d) len: %d, totla_tx_cnt: %d, total_tx_bytes: %d\n",packet.cmd, packet.buf_len, count, size);
+                    sendto(serv_sock, &packet, sizeof(packet), 0, 
 								(struct sockaddr*)&clnt_adr, clnt_adr_sz);
-                clnt_adr_sz=sizeof(clnt_adr);
-                recvfrom(serv_sock, &packet, sizeof(packet), 0, 
+                    clnt_adr_sz=sizeof(clnt_adr);
+                    recvfrom(serv_sock, &packet, sizeof(packet), 0, 
 								(struct sockaddr*)&clnt_adr, &clnt_adr_sz);
-                if(packet.cmd == FILE_END_ACK){
-                    printf("[Rx] FILE_END_ACK(cmd: %d)\n",packet.cmd);
-                    break;
+                    if(packet.cmd == FILE_END_ACK){
+                        printf("[Rx] FILE_END_ACK(cmd: %d)\n",packet.cmd);
+                        break;
+                    }
                 }
             }
             memset(&packet, 0, sizeof(packet));
