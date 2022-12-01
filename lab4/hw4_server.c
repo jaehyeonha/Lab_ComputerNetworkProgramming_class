@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
 	printf("[Server] sending %s\n\n",packet.buf);    
     packet.seq = SEQ_START;
-    while(packet.buf_len = read(fd,&packet.buf,BUF_SIZE)){
+    while(packet.buf_len = read(fd,packet.buf,BUF_SIZE)){
 		if(packet.buf_len==-1)
 			error_handling("read() error");
 
